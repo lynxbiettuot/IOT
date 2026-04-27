@@ -1,8 +1,11 @@
+
+
 #include "ScheduleControl.h"
 #include "MqttControl.h"
 #include <time.h>
 #include <Preferences.h>
 #include <Arduino.h>
+#include "LogControl.h"
 
 extern void armSystem(bool arm);
 Preferences prefs;
@@ -68,7 +71,11 @@ void handleSchedule() {
   if (isScheduleActive && ti.tm_hour == schH && ti.tm_min == schM) {
     if (!triggered) {
       Serial.println(">>> KHỚP GIỜ RỒI! DANG KICH HOAT...");
-      armSystem(true); 
+      armSystem(true);
+
+      // Ghi log báo hệ thống tự bật theo lịch
+      sendSystemLog("Tự động BẬT hệ thống (Khớp giờ hẹn: " + String(schH) + ":" + String(schM) + ")");
+
       triggered = true;
     }
   } else {

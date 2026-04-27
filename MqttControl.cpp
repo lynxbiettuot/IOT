@@ -1,5 +1,8 @@
+
+
 #include "MqttControl.h"
 #include "ScheduleControl.h"
+#include "LogControl.h"
 #include <WiFi.h>
 #include <Arduino.h>
 
@@ -20,8 +23,14 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String msg;
   for (int i = 0; i < length; i++) msg += (char)payload[i];
 
-  if (msg == "ON") armSystem(true);
-  else if (msg == "OFF") armSystem(false);
+  if (msg == "ON") {
+    armSystem(true);
+    sendSystemLog("Nhận lệnh MQTT: BẬT hệ thống");
+  }
+  else if (msg == "OFF") {
+    armSystem(false);
+    sendSystemLog("Nhận lệnh MQTT: TẮT hệ thống");
+  }
   else if (msg == "SCH_ON") toggleSchedule(true);
   else if (msg == "SCH_OFF") toggleSchedule(false);
   else if (msg.startsWith("SET_TIME:")) setAlarmTime(msg.substring(9));
